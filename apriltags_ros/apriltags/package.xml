@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package>
+  <name>apriltags</name>
+  <version>0.1.2</version>
+  <description>A catkin version of the C++ apriltags library</description>
+
+  <maintainer email="mwills@wpi.edu">Mitchell Wills</maintainer>
+  <author>Michael Kaess</author>
+  <author>Hordur Johannson</author>
+
+  <license>LGPL</license>
+
+  <url type="website">http://people.csail.mit.edu/kaess/apriltags/</url>
+  <url type="bugtracker">https://github.com/RIVeR-Lab/apriltags_ros/issues</url>
+  <url type="repository">https://github.com/RIVeR-Lab/apriltags_ros</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>eigen</build_depend>
+  <build_depend>cmake_modules</build_depend>
+  <build_depend>libv4l-dev</build_depend>
+  <build_depend>libopencv-dev</build_depend>
+  <run_depend>eigen</run_depend>
+  <run_depend>libv4l-dev</run_depend>
+  <run_depend>libopencv-dev</run_depend>
+
+
+  <export>
+  </export>
+</package>
