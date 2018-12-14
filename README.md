@@ -4,10 +4,15 @@ Extrinsic Calibration of a Camera and 2d Laser
 ## code build and compile:
 
 > mkdir calibra_ws
+
 > mkdir src
+
 > cd calibra_ws/src 
+
 > git clone https://github.com/MegviiRobot/CamLaserCalibraTool
+
 > cd ..
+
 > catkin_make
 
 ## Calibration Method
