@@ -3,16 +3,14 @@ Extrinsic Calibration of a Camera and 2d Laser
 
 ## code build and compile:
 
-> mkdir calibra_ws
-
-> mkdir src
-
+> mkdir -p calibra_ws/src
+>
 > cd calibra_ws/src 
-
+>
 > git clone https://github.com/MegviiRobot/CamLaserCalibraTool
-
+>
 > cd ..
-
+>
 > catkin_make
 
 ## Calibration Method
@@ -29,7 +27,9 @@ Prepare a calibration plate as follow figure shown. Then place the calibration p
 Run the following code to get the marker pose:
 
 > source calibra_ws/devel/setup.bash
+>
 > roslaunch apriltags_ros example.launch
+>
 > rosbag play your_bag.bag
 
 ### 4. Run Calibration
@@ -45,7 +45,7 @@ A python visualization tool is prepared in the folder config_and_tool, which wil
 ![evaluation](https://img-blog.csdnimg.cn/20181214142436227.png)
 
 ## Authors
-1. Yijia He, you can find the chinese version [in his homepage](https://blog.csdn.net/heyijia0327/article/details/85000943), if you have any question, please contact heyijia_2013 at 163 dot com
+1. Yijia He, you can find the chinese version [in his homepage](https://blog.csdn.net/heyijia0327/article/details/85000943), if you have any question, please contact heyijia at megvii dot com
 2. XiZhen Xiao
 3. Xiao Liu, [his homepage](http://www.liuxiao.org/)
 
