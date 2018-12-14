@@ -44,3 +44,5 @@ A python visualization tool is prepared in the folder config_and_tool, which wil
 2. XiZhen Xiao
 3. Xiao Liu, [his homepage](http://www.liuxiao.org/)
 
+## Ref:
+2004, Qilong Zhang, Extrinsic Calibration of a Camera and Laser Range Finder (improves camera calibration).
