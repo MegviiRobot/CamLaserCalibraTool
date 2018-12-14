@@ -1,0 +1,10 @@
+<launch>
+  <arg name="config_path" default = "/home/heyijia/ros_ws/calibra_laser_cam_ws/src/config_and_tool/calibrat_config.yaml" />
+
+
+  <node pkg="lClibra" type="lClibra" name="lClibra" output="screen">
+
+    <param name="config_file" type="string" value="$(arg config_path)" />
+
+  </node>
+</launch>
