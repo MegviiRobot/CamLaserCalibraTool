@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(lClibra)
-SET(CMAKE_BUILD_TYPE Debug) # Release, RelWithDebInfo , Debug
+SET(CMAKE_BUILD_TYPE Release) # Release, RelWithDebInfo , Debug
 
-
+set(CMAKE_CXX_FLAGS "-std=c++11 -g -Wall")
 #set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  -Wall  -O3 ")
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall   -O3 ")
 

@@ -64,7 +64,7 @@ void SaveCamPosetoTxt(std::string filename, const std::vector < CamPose > allcam
         return;
     }
 
-    for (int i = 0; i < allcampose.size(); ++i) {
+    for (size_t i = 0; i < allcampose.size(); ++i) {
         CamPose T = allcampose.at(i);
         foutC.setf(std::ios::fixed, std::ios::floatfield);
         foutC.precision(9);
@@ -93,7 +93,7 @@ std::vector< std::vector < CamPose > >  GetStaticPose(const std::vector < CamPos
 
     std::vector< std::vector < CamPose > > staticPoses;
     // 按时间顺序遍历所有的 pose
-    for (int i = 0; i < Poses.size(); ++i) {
+    for (size_t i = 0; i < Poses.size(); ++i) {
         CamPose T = Poses[i];
         if(new_center_flag)
         {
@@ -136,7 +136,7 @@ std::vector< std::vector < CamPose > >  GetStaticPose(const std::vector < CamPos
         Eigen::Quaterniond c_q_mean(0,0,0,1);
         Eigen::Matrix4d A_c = Eigen::Matrix4d::Zero();
 
-        int n =  staticPoses[i].size();
+        size_t n =  staticPoses[i].size();
         for (size_t j = 0; j < n; ++j) {
             c_t_mea += staticPoses[i][j].twc;
             Eigen::Vector4d qc(staticPoses[i][j].qwc.w(),staticPoses[i][j].qwc.x(),staticPoses[i][j].qwc.y(),staticPoses[i][j].qwc.z());
