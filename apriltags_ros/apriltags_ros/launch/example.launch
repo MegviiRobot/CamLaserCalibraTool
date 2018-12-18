@@ -1,5 +1,5 @@
 <launch>
-  <arg name="config_path" default = "/home/heyijia/ros_ws/calibra_laser_cam_ws/src/config_and_tool/calibrat_config.yaml" />
+  <arg name="config_path" default = "$(find lClibra)/../config_and_tool/calibrat_config.yaml" />
 
 
   <node pkg="apriltags_ros" type="apriltag_detector_node" name="apriltag_detector" output="screen">
