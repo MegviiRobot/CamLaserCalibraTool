@@ -146,8 +146,8 @@ int main(int argc, char **argv)
                 std::vector<Eigen::Vector3d> points;
                 points = GetROIScanPoints(Points,rois);
 
-                // 至少超过 100 个点， 选取的激光线段至少超过 30 cm
-                if(points.size() > 100 && (points[0] - points[points.size()-1]).norm() > 0.3)
+                // 至少超过 50 个点， 选取的激光线段至少超过 15 cm
+                if(points.size() > 50 && (points[0] - points[points.size()-1]).norm() > 0.15)
                 {
                     if(static_frame_cnt == 0)  // new static segment
                     {
@@ -163,7 +163,7 @@ int main(int argc, char **argv)
 
                 } else
                 {
-                    std::cout << "valid scan points are less, discard this frame" << std::endl;
+                    std::cout << "Discard frame, valid scan points num: "<< points.size() << std::endl;
                 }
             } else
             {
@@ -224,7 +224,7 @@ int main(int argc, char **argv)
     }
 
     Eigen::Matrix4d Tcl = Eigen::Matrix4d::Identity();
-    CamLaserCalibration(obs,Tcl,true);
+    CamLaserCalibration(obs,Tcl,false);
 
     std::cout << "\n----- Transform from Camera to Laser Tlc is: -----\n"<<std::endl;
     std::cout<<Tcl.inverse()<<std::endl;
