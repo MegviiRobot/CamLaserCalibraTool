@@ -105,7 +105,7 @@ std::vector< std::vector < CamPose > >  GetStaticPose(const std::vector < CamPos
 
         Eigen::Vector3d diff = T.twc - center;
         // 当前pose和之前的pose中心相差不远就加入静止点
-        if(diff.norm() < 0.005)
+        if(diff.norm() < 0.001)
         {
             xy_sum += T.twc;
             staticPose.push_back(T);
