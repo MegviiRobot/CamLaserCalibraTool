@@ -1,0 +1,27 @@
+%YAML:1.0
+
+#common parameters
+savePath: "/home/heyijia/1TDisk/calibra/txt/"
+bag_path: "/home/heyijia/1TDisk/calibra/2018-12-18-13-31-38.bag"
+
+scan_topic_name: "/scan"
+img_topic_name: "/mynteye/left/image_raw"
+
+#camera calibration 
+model_type: PINHOLE
+camera_name: camera
+image_width: 752
+image_height: 480
+distortion_parameters:
+   k1: -0.27041552
+   k2: 0.05389709
+   p1: 0.00017469
+   p2: 0.00017221
+
+projection_parameters:
+   fx: 362.05551445647944
+   fy: 361.9445018347795
+   cx: 361.46535236008697
+   cy: 242.5855603690369
+
+

@@ -17,6 +17,8 @@ set(PACKAGE_DEPENDENCIES
   roscpp
   rosbag
   sensor_msgs
+  tf
+  cv_bridge
 )
 
 find_package(catkin REQUIRED COMPONENTS ${PACKAGE_DEPENDENCIES})
@@ -49,4 +51,12 @@ target_link_libraries(${PROJECT_NAME}
   ${catkin_LIBRARIES}
   ${OpenCV_LIBRARIES}
   ${CERES_LIBRARIES}
+)
+
+add_executable(showscan_node debug_code/showscan_node.cpp)
+add_dependencies(showscan_node ${catkin_EXPORTED_TARGETS}
+)
+target_link_libraries(showscan_node
+  ${catkin_LIBRARIES}
+  ${OpenCV_LIBRARIES}
 )

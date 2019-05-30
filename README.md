@@ -39,7 +39,16 @@ After running the code, the tool will automatically detect each moment that came
 ![select_data](https://img-blog.csdnimg.cn/20181214142017919.png)
 
 ### 5. Calibration Evaluation
+#### evaluation method 1
 
+> roslaunch lClibra example.launch
+>
+> rosbag play your_bag.bag
+ 
+we project the laser point to the image plane, and you will get a image show  as follow:
+![evaluation1](https://img-blog.csdnimg.cn/20190530183443953.png)
+
+#### evaluation method 2
 A python visualization tool is prepared in the folder config_and_tool, which will plot the point cloud data and plane at each static moment. You can check whether the laser data falls on the plane to evaluate the result. The figure below shows the laser point cloud and the plane of the calibration plate at a certain moment.
 
 ![evaluation](https://img-blog.csdnimg.cn/20181214142436227.png)

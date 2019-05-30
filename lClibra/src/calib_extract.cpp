@@ -11,6 +11,7 @@
 
 #include <Eigen/Core>
 #include <opencv2/opencv.hpp>
+#include "opencv/cxeigen.hpp"
 #include <fstream>
 
 #include "utilities.h"
@@ -147,7 +148,8 @@ int main(int argc, char **argv)
                 points = GetROIScanPoints(Points,rois);
 
                 // 至少超过 50 个点， 选取的激光线段至少超过 15 cm
-                if(points.size() > 50 && (points[0] - points[points.size()-1]).norm() > 0.15)
+//                if(points.size() > 50 && (points[0] - points[points.size()-1]).norm() > 0.15)
+                if((points[0] - points[points.size()-1]).norm() > 0.15)
                 {
                     if(static_frame_cnt == 0)  // new static segment
                     {
@@ -228,6 +230,16 @@ int main(int argc, char **argv)
 
     std::cout << "\n----- Transform from Camera to Laser Tlc is: -----\n"<<std::endl;
     std::cout<<Tcl.inverse()<<std::endl;
+
+    // save to yaml file
+    cv::Mat cvTlc;
+    Eigen::Matrix4d Tlc = Tcl.inverse();
+    cv::eigen2cv(Tlc,cvTlc);
+    std::string fn = savePath + "result.yaml";
+    cv::FileStorage fs(fn, cv::FileStorage::WRITE);
+    fs << "extrinsicTlc"<<cvTlc;
+    fs.release();
+    std::cout << "\n Result file : "<<fn<<std::endl;
     std::cout << "\n-------------- Calibration Code End --------------\n"<<std::endl;
 
     CalibrationTool_SavePlanePoints(obs,Tcl,savePath);

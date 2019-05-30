@@ -2,7 +2,7 @@
   <arg name="config_path" default = "$(find lClibra)/../config_and_tool/calibrat_config.yaml" />
 
 
-  <node pkg="lClibra" type="lClibra" name="lClibra" output="screen">
+  <node pkg="lClibra" type="showscan_node" name="showscan_node" output="screen">
 
     <param name="config_file" type="string" value="$(arg config_path)" />
 

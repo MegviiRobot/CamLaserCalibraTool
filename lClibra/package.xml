@@ -13,4 +13,6 @@
   <depend>roscpp</depend>
   <depend>rosbag</depend>
   <depend>sensor_msgs</depend>
+  <depend>tf</depend>
+  <depend>cv_bridge</depend>
 </package>
