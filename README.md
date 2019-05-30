@@ -41,11 +41,11 @@ After running the code, the tool will automatically detect each moment that came
 ### 5. Calibration Evaluation
 #### evaluation method 1
 
-> roslaunch lClibra example.launch
+> roslaunch lClibra debug.launch
 >
 > rosbag play your_bag.bag
- 
-we project the laser point to the image plane, and you will get a image show  as follow:
+
+we will project the laser points to the image plane, and you will get a image  as follow:
 ![evaluation1](https://img-blog.csdnimg.cn/20190530183443953.png)
 
 #### evaluation method 2
