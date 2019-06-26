@@ -106,7 +106,7 @@ AprilTagDetector::AprilTagDetector(ros::NodeHandle& nh, ros::NodeHandle& pnh): i
     double m_cy = static_cast<double>(n1["cy"]);
     fsSettings.release();
 
-    cvK_ = (cv::Mat_<float>(3, 3) << m_fx, 0.0, m_fy, 0.0, m_cx, m_cy, 0.0, 0.0, 1.0);
+    cvK_ = (cv::Mat_<float>(3, 3) << m_fx, 0.0, m_cx, 0.0, m_fy, m_cy, 0.0, 0.0, 1.0);
     cvD_ = (cv::Mat_<float>(1, 5) << m_k1, m_k2, m_p1, m_p2, 0.);
     cv::initUndistortRectifyMap(cvK_, cvD_, cv::Mat_<double>::eye(3,3), cvK_,
                                 cv::Size(width_, height_), CV_16SC2, undist_map1_, undist_map2_);
