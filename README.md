@@ -1,6 +1,7 @@
-## New Calibra Tool
+## Camera Laser Calibration Tool
+[ ![Build Status](doc/README-English-yellow.svg) ](README_EN.md)
 ### 1. 介绍
-这是一个基于 ROS 的单线激光和相机外参数自动标定代码。标定原理如下图所示，相机通过二维码估计标定板平面在相机坐标系下的平面方程，由于激光点云落在平面上，将点云通过激光坐标系到相机坐标系的外参数 $T_{cl}$  转换到相机坐标系，构建点到平面的距离作为误差，使用非线性最小二乘进行求解。
+这是一个基于 ROS 的单线激光和相机外参数自动标定代码。标定原理如下图所示，相机通过二维码估计标定板平面在相机坐标系下的平面方程，由于激光点云落在平面上，将点云通过激光坐标系到相机坐标系的外参数 $ T_{cl} $  转换到相机坐标系，构建点到平面的距离作为误差，使用非线性最小二乘进行求解。
 ![lasercamcal](doc/lasercamcal.png)
 
 ### 2. 特征
@@ -26,9 +27,6 @@ catkin_make -DCMAKE_BUILD_TYPE=Release
 请配置好 config/calibra_config.yaml 文件，里面有**相机模型参数，rosbag 数据包的名字和保存路径，相机模型以及标定板的尺寸和类型等等。** 具体请参考对应的 config.yaml。
 
 采集激光数据制作 rosbag，请将标定板放于激光和相机前方 0.3m ~ 1.5m 左右，充分运动标定板（各个轴，各个角度，各个距离和高度都充分运动）。![datacollect](doc/datacollect.gif)
-
-
-
 
 #### 4.2 先运行 kalibr 检测图像二维码
 会把相机和标定板之间的姿态保存成一个 txt，用于后续标定。
