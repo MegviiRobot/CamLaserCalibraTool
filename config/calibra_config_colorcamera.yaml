@@ -1,0 +1,31 @@
+%YAML:1.0
+
+#common parameters
+savePath: "/home/hyj/all_ros_ws/LaserCamCal_ws/src/log/"
+bag_path: "/home/hyj/文档/megvii/himap/calibr_Tlc.bag"
+
+scan_topic_name: "/scan"
+img_topic_name: "/mynteye/left/image_raw"
+
+# tag info
+tag_type: 1 # 1: kalibr_tag, 2: apriltag
+tag_size: 0.055 # tag size, unit meter
+tag_spacing: 0.3 # tag spacing, only used in kalibr_tag. For details, please see kalibr tag description.
+black_border: 2 # if you use kalibr_tag black_boarder = 2; if you use apriltag black_boarder = 1
+ 
+#camera calibration 
+model_type: KANNALA_BRANDT
+camera_name: cam0
+image_width: 640
+image_height: 400
+
+projection_parameters:
+   mu: 199.6218305573563
+   mv: 199.66071030865186
+   u0: 310.30446851278043
+   v0: 209.51232165516032
+   k2: 0.6155993559183067
+   k3: 0.08547201092624512
+   k4: -0.45802628674526896
+   k5: 0.2000795601333037
+

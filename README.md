@@ -1,62 +1,61 @@
-# CamLaserCalibraTool
-Extrinsic Calibration of a Camera and 2d Laser
+## New Calibra Tool
+### 介绍
+这是一个基于 ROS 的单线激光和相机外参数自动标定代码。
 
-## code build and compile:
+### 特征
+1. **支持多 April tag 格式**。 可以选择多 apriltag 的标定板 ( [kalibr_tag.pdf](doc/april_6x6_80x80cm_A0.pdf) ) 或者自己打印一个 apriltag 做标定板([apriltag.pdf](/doc/apriltags1-20.pdf))。
+2. **支持多种相机模型**。**radial-tangential (radtan)** : (*distortion_coeffs*: [k1 k2 r1 r2]); **equidistant (equi)**:*distortion_coeffs*: [k1 k2 k3 k4]). More info please visit [kalibr website](https://github.com/ethz-asl/kalibr/wiki/supported-models).
+3. **激光线自动检测，无须手标**。会自动提取激光线中落在标定板上的激光点，前提是标定板在激光正前方 120 度范围内，并且激光前方 2m 范围内只会存在一个连续的直线线段，所以请你在空旷的地方采集数据，不然激光数据会提取错误。
+4. **利用标定板的边界约束，标定结果更加准确**。这个是隐藏的功能，暂时未对外开放接口，需要你修改代码。
 
-> mkdir -p calibra_ws/src
->
-> cd calibra_ws/src 
->
-> git clone https://github.com/MegviiRobot/CamLaserCalibraTool
->
-> cd ..
->
-> catkin_make
+### 编译方法
 
-## Calibration Method
-As Fig show, we use an apriltag marker as a calibration board. These 2d laser scan points should on the calibration planar. After computing the marker pose $T_{cm}$ in the camera frame by solvePnp, we can get the planar equation in the camera frame. Then using these points on the planar to constraint the extrinsic $T_{cl}$.
-![calibra_method](https://img-blog.csdnimg.cn/20181214120913798.png)
+```c++
+mkdir LaserCameraCal_ws
+mkdir ../src
+cd src
+git clone https:/这个代码/
+cd ..
+catkin_make -DCMAKE_BUILD_TYPE=Release
+```
 
-## Calibration Step
-### 1. Data Collection 
-Prepare a calibration plate as follow figure shown. Then place the calibration plate in front of the camera and laser, and the laser scan should fall on the calibration plate. Record all image and laser data with rosbag. Constantly adjust the plate pose, each time you change the pose, please keep still for more than 2 seconds, collect data with about 10 different pose (of course, the more the better).
-![calibra_board](https://img-blog.csdnimg.cn/20181214140949954.png)
+### 运行
 
-### 2. Prepare config.yaml parameters 
-### 3. Save Marker Pose
-Run the following code to get the marker pose:
+有两种运行模式，一种是先离线处理图像数据，再处理激光数据；一种是图像和激光数据一起处理。自己调试代码建议采用离线的方式，这样就不需要每次都重复运行图像识别，浪费时间。
 
-> source calibra_ws/devel/setup.bash
->
-> roslaunch apriltags_ros example.launch
->
-> rosbag play your_bag.bag
+无论采用那种模式运行，请实现配置好 config/calibra_config.yaml 文件，里面有**相机模型参数，rosbag 数据包的名字和保存路径**。相机模型支持不同类型，请选择对应的config.yaml.
 
-### 4. Run Calibration
-> roslaunch lClibra example.launch 
+#### 1. 离线模式
 
-After running the code, the tool will automatically detect each moment that camera do not move. Once detected, the laser data will be drawn into an image. You can select the lasers that just fall on the calibration board from the image. Notice: Don't choose points that is not on the plane. Then press any key to continue, as shown below:
-![select_data](https://img-blog.csdnimg.cn/20181214142017919.png)
+先运行 kalibr 检测图像二维码
 
-### 5. Calibration Evaluation
-#### evaluation method 1
+```c++
+cd LaserCameraCal_ws
+source devel/setup.bash
+roslaunch lasercamcal_ros kalibra_apriltag.launch 
+```
 
-> roslaunch lClibra debug.launch
->
-> rosbag play your_bag.bag
+再运行激光视觉外参数标定代码
 
-we will project the laser points to the image plane, and you will get a image  as follow:
-![evaluation1](https://img-blog.csdnimg.cn/20190530183443953.png)
+```c++
+roslaunch lasercamcal_ros calibra_offline.launch 
+```
 
-#### evaluation method 2
-A python visualization tool is prepared in the folder config_and_tool, which will plot the point cloud data and plane at each static moment. You can check whether the laser data falls on the plane to evaluate the result. The figure below shows the laser point cloud and the plane of the calibration plate at a certain moment.
+就能自动检测激光，并输出结果
 
-![evaluation](https://img-blog.csdnimg.cn/20181214142436227.png)
+验证结果
 
-## Authors
-1. Yijia He, you can find the chinese version [in his homepage](https://blog.csdn.net/heyijia0327/article/details/85000943), if you have any question, please contact heyijia at megvii dot com
-2. XiZhen Xiao
-3. Xiao Liu, [his homepage](http://www.liuxiao.org/)
+```c++
+roslaunch lasercamcal_ros debug.launch 
+rosbag play data.bag
+```
 
-## Ref:
-2004, Qilong Zhang, Extrinsic Calibration of a Camera and Laser Range Finder (improves camera calibration).
+
+
+## TODO
+
+1. 支持修改相机采样间隔？？？ 还是说采用自动判断信息熵？
+2. 
+
+## RESULTS
+![calibra](doc/calibra.gif)

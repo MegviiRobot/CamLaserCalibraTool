@@ -1,0 +1,10 @@
+<launch>
+  <arg name="config_path" default = "$(find lasercamcal_ros)/config/calibra_config.yaml" />
+
+
+  <node pkg="lasercamcal_ros" type="showscan_node" name="showscan_node" output="screen">
+
+    <param name="config_file" type="string" value="$(arg config_path)" />
+
+  </node>
+</launch>

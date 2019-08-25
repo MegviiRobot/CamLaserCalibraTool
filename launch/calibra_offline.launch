@@ -1,0 +1,19 @@
+<launch>
+  <arg name="config_path" default = "$(find lasercamcal_ros)/config/calibra_config_colorcamera.yaml" />
+
+
+  <node pkg="lasercamcal_ros" type="lasercamcal_node" name="lasercamcal_ros" output="screen">
+    <!-- Remap topic required by the node to custom topics -->
+    <!--<remap from="image_rect" to="/mynteye/left/image_raw" />-->
+
+    <param name="config_file" type="string" value="$(arg config_path)" />
+
+    <!-- Optional: Subscribe to the compressed stream-->
+    <param name="image_transport" type="str" value="compressed" />
+
+    <!-- Select the tag family: 16h5, 25h7, 25h9, 36h9, or 36h11(default) -->
+    <param name="tag_family" type="str" value="36h11" />
+
+
+  </node>
+</launch>
