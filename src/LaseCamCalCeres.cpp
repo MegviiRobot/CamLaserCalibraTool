@@ -207,7 +207,7 @@ void CamLaserCalibration(const std::vector<Oberserve> obs, Eigen::Matrix4d &Tcl,
     ceres::Solver::Summary summary;
     ceres::Solve (options, &problem, & summary);
 
-    std::cout << summary.FullReport() << std::endl;
+    // std::cout << summary.FullReport() << std::endl;
 
     q = Eigen::Quaterniond(pose[6],pose[3],pose[4],pose[5]);
 
@@ -257,15 +257,6 @@ void CamLaserCalibration(const std::vector<Oberserve> obs, Eigen::Matrix4d &Tcl,
 
             chi += resd * resd;
 
-//#ifdef LOSSFUNCTION
-//            //ceres::LossFunctionWrapper* loss_function(new ceres::HuberLoss(1.0), ceres::TAKE_OWNERSHIP);
-//            ceres::LossFunction * loss_function = new ceres::CauchyLoss(0.5);
-//            problem.AddResidualBlock(costfunction, loss_function, q_coeffs, t_coeffs);
-//#else
-//            problem.AddResidualBlock(costfunction, NULL, q_coeffs, t_coeffs, &scale);
-//#endif
-
-
         }
     }
 
@@ -273,6 +264,19 @@ void CamLaserCalibration(const std::vector<Oberserve> obs, Eigen::Matrix4d &Tcl,
     std::cout << "----- H singular values--------:\n";
     Eigen::JacobiSVD<Eigen::MatrixXd> svd(H, Eigen::ComputeThinU | Eigen::ComputeThinV);
     std::cout << svd.singularValues() <<std::endl;
+    int n = 0;
+    for (size_t i = 0; i < svd.singularValues().size(); i++)
+    {
+        if(svd.singularValues()[i] < 1e-8)
+            n++;
+    }
+    if(n > 0)
+    {
+        std::cout << "====== null space basis, it's means the unobservable direction for Tcl ======" <<std::endl;
+        std::cout << "       please note the unobservable direction is for Tcl, not for Tlc        " <<std::endl;
+        std::cout<< svd.matrixV().rightCols(n) <<std::endl;
+    }
+    
     std::cout <<"\nrecover chi2: " <<chi / 2. << std::endl;
 
 }

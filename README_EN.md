@@ -21,20 +21,32 @@ catkin_make -DCMAKE_BUILD_TYPE=Release
 ```
 ### 4. Run
 
-#### 4.1 Preparation
+#### 4.1 Simulation Data
+
+**Strongly recommended: **Try this calibration system with simulation data first. The observability of the system can be verified through simulation, which can guide you how to collect data before calibrating your equipment.
+
+```c++
+cd LaserCameraCal_ws
+source devel/setup.bash 
+rosrun lasercamcal_ros simulation_lasercamcal_node
+```
+
+In particular, please read main/calibr_simulation.cpp carefully. You can modify the code to study the observability of the calibratioin system.
+
+#### 4.2 Preparation
 Please configure the config/calibra_config.yaml file with **the camera model parameters, the name and save path of the rosbag package, the size and type of the calibration board**. Please refer to the corresponding config.yaml for details.
 
 Collect laser data to make rosbag, please place the calibration plate on the laser and camera front 0.3m ~ 1.5m, fully move the calibration plate (each axis, each angle, each distance and height are fully moving)
 ![datacollect](doc/datacollect.gif)
 
-#### 4.2 Run kalibr to detect apriltag and estimate the camera pose
+#### 4.3 Run kalibr to detect apriltag and estimate the camera pose
 The camera pose between the camera frame and tag frame will be saved as a txt file.
 ```c++
 cd LaserCameraCal_ws
 source devel/setup.bash
 roslaunch lasercamcal_ros kalibra_apriltag.launch 
 ```
-#### 4.3 Run the calibration code
+#### 4.4 Run the calibration code
 ```c++
 roslaunch lasercamcal_ros calibra_offline.launch 
 ```
@@ -42,7 +54,7 @@ The automatic detection of the laser segment is shown below with <font color = r
 
 ![detect](doc/detect.gif)
 
-#### 4.4 Validation Results
+#### 4.5 Validation Results
 ```c++
 roslaunch lasercamcal_ros debug.launch 
 rosbag play yourbagdata.bag

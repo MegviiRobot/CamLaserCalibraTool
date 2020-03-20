@@ -23,12 +23,24 @@ catkin_make -DCMAKE_BUILD_TYPE=Release
 
 ### 4. 运行
 
-#### 4.1 运行前的准备
+#### 4.1 仿真数据
+
+**强烈建议: **先用仿真数据试试这个标定系统，系统的可观性问题在仿真代码里都能找到验证，这样就能指导你如何采集数据。
+
+```c++
+cd LaserCameraCal_ws
+source devel/setup.bash 
+rosrun lasercamcal_ros simulation_lasercamcal_node
+```
+
+特别地，请仔细阅读 main/calibr_simulation.cpp ，修改数据的生成观察系统的可观性。
+
+#### 4.2 实际数据，运行前的准备
 请配置好 config/calibra_config.yaml 文件，里面有**相机模型参数，rosbag 数据包的名字和保存路径，相机模型以及标定板的尺寸和类型等等。** 具体请参考对应的 config.yaml。
 
-采集激光数据制作 rosbag，请将标定板放于激光和相机前方 0.3m ~ 1.5m 左右，充分运动标定板（各个轴，各个角度，各个距离和高度都充分运动）。![datacollect](doc/datacollect.gif)
+采集激光数据制作 rosbag，请将标定板放于激光和相机前方 0.3m ~ 1.5m 左右，充分运动标定板（各个轴，各个角度，各个距离都充分运动）。![datacollect](doc/datacollect.gif)
 
-#### 4.2 先运行 kalibr 检测图像二维码
+#### 4.3 先运行 kalibr 检测图像二维码
 会把相机和标定板之间的姿态保存成一个 txt，用于后续标定。
 ```c++
 cd LaserCameraCal_ws
@@ -36,7 +48,7 @@ source devel/setup.bash
 roslaunch lasercamcal_ros kalibra_apriltag.launch 
 ```
 
-#### 4.3 再运行激光视觉外参数标定代码
+#### 4.4 再运行激光视觉外参数标定代码
 会自动检测激光在标定板上的线段，并完成标定和保存结果。
 ```c++
 roslaunch lasercamcal_ros calibra_offline.launch 
@@ -45,7 +57,7 @@ roslaunch lasercamcal_ros calibra_offline.launch
 
 ![detect](doc/detect.gif)
 
-#### 4.4 验证结果
+#### 4.5 验证结果
 ```c++
 roslaunch lasercamcal_ros debug.launch 
 rosbag play data.bag

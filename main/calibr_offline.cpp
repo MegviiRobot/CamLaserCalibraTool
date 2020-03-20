@@ -59,7 +59,7 @@ int main(int argc, char **argv){
     return 0;
   }
 
-  /// 移除一些标定板没咋动的数据，防止静止的标定板数据占的比重较多，影响标定结果。比如标定板静止了 1 min, 那会采集非常多的数据，但实际有效的只有一帧数据。
+  /// Select keyframe to calibrating
   std::vector< CamPose > sparseTagpose;
   CamPose older = tagpose.at(0);
   sparseTagpose.push_back(older);

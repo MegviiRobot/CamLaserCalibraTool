@@ -92,6 +92,13 @@ target_link_libraries(lasercamcal_node
         lasercamcal
         )
 
+
+add_executable(simulation_lasercamcal_node main/calibr_simulation.cpp)
+target_link_libraries(simulation_lasercamcal_node
+        ${catkin_LIBRARIES}
+        lasercamcal
+        )        
+
 add_executable(showscan_node debug_code/showscan_node.cpp)
 add_dependencies(showscan_node ${catkin_EXPORTED_TARGETS})
 target_link_libraries(showscan_node
