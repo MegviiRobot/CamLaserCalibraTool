@@ -19,7 +19,7 @@ void GenerateSimData( std::vector<Oberserve>& obs)
   Eigen::Quaterniond qlc(Rlc);              
   Eigen::Vector3d tlc(0.1, 0.2, 0.3);
 
-  std::cout << "============= Ground Truth of Rotation and translation =============== " << std::endl;
+  std::cout << "============= Ground Truth of Rotation and translation: Rlc, tlc =============== " << std::endl;
   std::cout << Rlc << std::endl;
   std::cout << tlc << std::endl;
   std::cout << "============= End =============== " << std::endl;
@@ -48,7 +48,7 @@ void GenerateSimData( std::vector<Oberserve>& obs)
     //     *Eigen::AngleAxisd(rpy_rand(generator),Eigen::Vector3d::UnitX());
       
     // Try me!!! ONLY pitch, Wow!!!! you will find we can not estimate the tlc.z() 
-    Rca = Eigen::AngleAxisd(rpy_rand(generator),Eigen::Vector3d::UnitY());
+    // Rca = Eigen::AngleAxisd(rpy_rand(generator),Eigen::Vector3d::UnitY());
 
     // Try me!!! ONLY roll
     // Rca = Eigen::AngleAxisd(rpy_rand(generator),Eigen::Vector3d::UnitX());
@@ -99,6 +99,7 @@ void GenerateSimData( std::vector<Oberserve>& obs)
     ob.tagPose_Qca = qca;
     ob.tagPose_tca = tca;
     ob.points = points;
+    ob.points_on_line = points;
     obs.push_back(ob);    
 
   }
@@ -122,9 +123,11 @@ int main(int argc, char **argv){
   }
   std::cout <<"obs size: "<< obs.size() <<std::endl;
 
+  Eigen::Matrix4d Tlc_initial = Eigen::Matrix4d::Identity();
+  CamLaserCalClosedSolution(obs,Tlc_initial);
 
-  Eigen::Matrix4d Tcl = Eigen::Matrix4d::Identity();
-  CamLaserCalibration(obs,Tcl, false);
+  Eigen::Matrix4d Tcl = Tlc_initial.inverse();
+  CamLaserCalibration(obs,Tcl, false);   // refine results by non-linear optimiztion
   //CamLaserCalibration(obs,Tcl, true);
 
   std::cout << "\n----- Transform from Camera to Laser Tlc is: -----\n"<<std::endl;

@@ -24,6 +24,7 @@ struct Oberserve
 };
 
 void LineFittingCeres(const std::vector<Eigen::Vector3d> Points, Eigen::Vector2d & Line);
+void CamLaserCalClosedSolution(const std::vector<Oberserve> obs, Eigen::Matrix4d &Tlc);
 void CamLaserCalibration(const std::vector<Oberserve> obs, Eigen::Matrix4d &Trc, bool use_linefitting_data = true, bool use_boundary_constraint = false);
 void CalibrationTool_SavePlanePoints(const std::vector<Oberserve> obs, const Eigen::Matrix4d Tcl, const std::string path);
 #endif //PROJECT_LASECAMCALCERES_H

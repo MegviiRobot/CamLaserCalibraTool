@@ -55,7 +55,6 @@ bool PointInPlaneFactor::Evaluate(double const *const *parameters, double *resid
             jacobian_pose_i.rightCols<1>().setZero();
         }
 
-
     }
 
     return true;
@@ -105,6 +104,98 @@ void CalibrationTool_SavePlanePoints(const std::vector<Oberserve> obs, const Eig
 
 }
 
+void CamLaserCalClosedSolution(const std::vector<Oberserve> obs, Eigen::Matrix4d &Tlc)
+{
+    int cnt = 0;
+    for (size_t i = 0; i < obs.size(); i++)
+    {
+        cnt += obs[i].points_on_line.size();
+    }
+
+    // nHp = -d --> AH = b
+    /*     [ h1, h4, h7]
+       H = [ h2, h5, h8]
+           [ h3, h6, h9]
+    */
+    Eigen::MatrixXd A(cnt,9);
+    Eigen::VectorXd b(cnt);
+
+    int index = 0;
+    for (size_t i = 0; i < obs.size(); i++)
+    {
+        Oberserve obi = obs[i];
+        
+        Eigen::Vector4d planar_tag(0,0,1,0);  // tag plane in tag frame
+        Eigen::Matrix4d Tctag = Eigen::Matrix4d::Identity();
+        Tctag.block(0,0,3,3) = obi.tagPose_Qca.toRotationMatrix();
+        Tctag.block(0,3,3,1) = obi.tagPose_tca;
+        Eigen::Vector4d planar_cam = (Tctag.inverse()).transpose() * planar_tag; // plane parameters in camera frame
+
+        Eigen::Vector3d nc = planar_cam.head<3>();
+        double dc = planar_cam[3];
+
+        std::vector<Eigen::Vector3d> calibra_pts;
+        calibra_pts =  obi.points_on_line;
+        for (size_t j = 0; j < calibra_pts.size(); ++j) 
+        {
+            Eigen::Vector3d pt =  calibra_pts[j];
+            Eigen::Vector3d bar_p(pt.x(),pt.y(),1);
+
+            Eigen::Matrix<double , 1, 9> Ai;
+            Ai<<nc.x() * bar_p.x(), nc.y() * bar_p.x(), nc.z()*bar_p.x(),
+                nc.x() * bar_p.y(), nc.y() * bar_p.y(), nc.z()*bar_p.y(),
+                nc.x() * bar_p.z(), nc.y() * bar_p.z(), nc.z()*bar_p.z();
+
+            A.row(index) = Ai;
+            b(index) = -dc;
+            // std::cout <<A.row(index)<<"\n"<< b(index) << std::endl;
+            index ++;
+        }
+    }
+
+    Eigen::MatrixXd AtA = A.transpose() * A;
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd(AtA, Eigen::ComputeThinU | Eigen::ComputeThinV);
+    // std::cout << svd.singularValues() <<std::endl;
+    bool unobservable = false;
+    for (size_t i = 0; i < svd.singularValues().size(); i++)
+    {
+        if(svd.singularValues()[i] < 1e-10)
+        {
+            unobservable = true;
+        }
+    }
+    
+    if(unobservable)
+    {
+        std::cout <<std::endl<< "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
+        std::cout << " Notice Notice Notice: system unobservable !!!!!!!" << std::endl;
+        std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl<<std::endl;
+    }
+
+    Eigen::VectorXd H(9);
+    H = (AtA).ldlt().solve(A.transpose() * b);
+
+    Eigen::Vector3d h1 = H.segment<3>(0);
+    Eigen::Vector3d h2 = H.segment<3>(3);
+    Eigen::Vector3d h3 = H.segment<3>(6);
+
+    Eigen::Matrix3d Rcl;
+    Rcl.col(0) = h1;
+    Rcl.col(1) = h2;
+    Rcl.col(2) = h1.cross(h2);
+    Eigen::Matrix3d Rlc = Rcl.transpose();  // here, Rlc maybe not a rotation matrix
+    Eigen::Vector3d tlc = -Rlc * h3;
+
+    // On Closed-Form Formulas for the 3D Nearest Rotation Matrix
+    Eigen::JacobiSVD<Eigen::MatrixXd> svd_tmp(Rlc, Eigen::ComputeThinU | Eigen::ComputeThinV);
+    Rlc = svd_tmp.matrixU() * svd_tmp.matrixV().transpose();
+
+    Tlc.setIdentity();
+    Tlc.block(0,0,3,3) = Rlc;
+    Tlc.block(0,3,3,1) = tlc;
+
+    std::cout <<"------- Closed-form solution Tlc: -------\n" << Tlc <<std::endl;
+}
 /**
  * @brief 利用激光点落在平面上这个约束构建误差方程
  * @param obs 观察到的激光数据
