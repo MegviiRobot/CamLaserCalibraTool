@@ -18,12 +18,16 @@ class PointInPlaneFactor: public ceres::SizedCostFunction<1,7>
 private:
     Eigen::Vector4d planar_;
     Eigen::Vector3d point_;
+    double scale_ = 1.0;
 
 public:
     PointInPlaneFactor(Eigen::Vector4d planar,    // planar
-    Eigen::Vector3d point)   // point
+    Eigen::Vector3d point, double scale = 1.)   // point
     : planar_(planar),point_(point)
-    {}
+    {
+        scale_ = scale;
+        // std::cout << scale_ << std::endl;
+    }
 
     virtual bool Evaluate(double const *const *parameters, double *residuals, double **jacobians) const;
 };
@@ -41,7 +45,8 @@ bool PointInPlaneFactor::Evaluate(double const *const *parameters, double *resid
     Eigen::Quaterniond qcl(parameters[0][6], parameters[0][3], parameters[0][4], parameters[0][5]);
 
     Eigen::Vector3d pt_c = qcl.toRotationMatrix() * point_ + tcl;
-    residuals[0] = planar_.head(3).transpose() * pt_c + planar_[3];
+    residuals[0] = scale_ * ( planar_.head(3).transpose() * pt_c + planar_[3] );
+    // std::cout << residuals[0] <<std::endl;
 
     if (jacobians)
     {
@@ -51,7 +56,7 @@ bool PointInPlaneFactor::Evaluate(double const *const *parameters, double *resid
             jaco_i.leftCols<3>() = planar_.head(3);
             jaco_i.rightCols<3>() = planar_.head(3).transpose() * (-qcl.toRotationMatrix() * skewSymmetric(point_));
 
-            jacobian_pose_i.leftCols<6>() = jaco_i;
+            jacobian_pose_i.leftCols<6>() = scale_ * jaco_i;
             jacobian_pose_i.rightCols<1>().setZero();
         }
 
@@ -230,15 +235,18 @@ void CamLaserCalibration(const std::vector<Oberserve> obs, Eigen::Matrix4d &Tcl,
             calibra_pts =  obi.points_on_line;
         else
             calibra_pts =  obi.points;
-
-        for (size_t j = 0; j < calibra_pts.size(); ++j) {
+        
+        double scale = calibra_pts.size(); // scale = 1/sqrt(n)
+        scale =  1./sqrt(scale);
+        for (size_t j = 0; j < calibra_pts.size(); ++j) 
+        {
             Eigen::Vector3d pt =  calibra_pts[j];
 
-            PointInPlaneFactor *costfunction = new PointInPlaneFactor(planar_cam, pt);
+            PointInPlaneFactor *costfunction = new PointInPlaneFactor(planar_cam, pt, scale);
 
 #ifdef LOSSFUNCTION
             //ceres::LossFunctionWrapper* loss_function(new ceres::HuberLoss(1.0), ceres::TAKE_OWNERSHIP);
-            ceres::LossFunction * loss_function = new ceres::CauchyLoss(0.1);
+            ceres::LossFunction * loss_function = new ceres::CauchyLoss(0.05 * scale);
             problem.AddResidualBlock(costfunction, loss_function, pose.data());
 #else
             problem.AddResidualBlock(costfunction, NULL, pose.data());
@@ -270,12 +278,12 @@ void CamLaserCalibration(const std::vector<Oberserve> obs, Eigen::Matrix4d &Tcl,
             Eigen::Vector3d pt1 =  obi.points.at(0);
             Eigen::Vector3d pt2 =  obi.points.at(obi.points.size()-1);
 //            std::cout << " " <<pt1.dot(pi1.head(3))<<std::endl;
-            PointInPlaneFactor *costfunction1 = new PointInPlaneFactor(pi1, pt1);
-            PointInPlaneFactor *costfunction2 = new PointInPlaneFactor(pi2, pt2);
+            PointInPlaneFactor *costfunction1 = new PointInPlaneFactor(pi1, pt1, scale);
+            PointInPlaneFactor *costfunction2 = new PointInPlaneFactor(pi2, pt2, scale);
 
 #ifdef LOSSFUNCTION
             //ceres::LossFunctionWrapper* loss_function(new ceres::HuberLoss(1.0), ceres::TAKE_OWNERSHIP);
-            ceres::LossFunction * loss_function = new ceres::CauchyLoss(0.1);
+            ceres::LossFunction * loss_function = new ceres::CauchyLoss(0.05 * scale);
             problem.AddResidualBlock(costfunction1, loss_function, pose.data());
             problem.AddResidualBlock(costfunction2, loss_function, pose.data());
 
@@ -298,7 +306,7 @@ void CamLaserCalibration(const std::vector<Oberserve> obs, Eigen::Matrix4d &Tcl,
     ceres::Solver::Summary summary;
     ceres::Solve (options, &problem, & summary);
 
-    // std::cout << summary.FullReport() << std::endl;
+    std::cout << summary.FullReport() << std::endl;
 
     q = Eigen::Quaterniond(pose[6],pose[3],pose[4],pose[5]);
 
@@ -329,6 +337,8 @@ void CamLaserCalibration(const std::vector<Oberserve> obs, Eigen::Matrix4d &Tcl,
         else
             calibra_pts =  obi.points;
 
+        double scale = calibra_pts.size(); // scale = 1/sqrt(n)
+        scale =  1./sqrt(scale);
         for (size_t j = 0; j < calibra_pts.size(); ++j) {
             Eigen::Vector3d pt =  calibra_pts[j];
 
@@ -336,7 +346,7 @@ void CamLaserCalibration(const std::vector<Oberserve> obs, Eigen::Matrix4d &Tcl,
             double **jaco = new double *[1];
             jaco[0] = new double[1 * 7];
 
-            PointInPlaneFactor *costfunction = new PointInPlaneFactor(planar_cam, pt);
+            PointInPlaneFactor *costfunction = new PointInPlaneFactor(planar_cam, pt, scale);
 
             costfunction->Evaluate(std::vector<double *>{pose.data()}.data(), res, jaco);
             Eigen::Map<Eigen::Matrix<double, 1, 7, Eigen::RowMajor>> jacobian_pose_i(jaco[0]);

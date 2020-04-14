@@ -168,7 +168,7 @@ int main(int argc, char **argv){
 
   Eigen::Matrix4d Tcl = Tlc_initial.inverse();
   CamLaserCalibration(obs,Tcl, false);
-  //CamLaserCalibration(obs,Tcl, true);
+  // CamLaserCalibration(obs,Tcl, true);
 
   std::cout << "\n----- Transform from Camera to Laser Tlc is: -----\n"<<std::endl;
   Eigen::Matrix4d Tlc = Tcl.inverse();

@@ -124,7 +124,7 @@ int main(int argc, char **argv){
   std::cout <<"obs size: "<< obs.size() <<std::endl;
 
   Eigen::Matrix4d Tlc_initial = Eigen::Matrix4d::Identity();
-  CamLaserCalClosedSolution(obs,Tlc_initial);
+  // CamLaserCalClosedSolution(obs,Tlc_initial);
 
   Eigen::Matrix4d Tcl = Tlc_initial.inverse();
   CamLaserCalibration(obs,Tcl, false);   // refine results by non-linear optimiztion
