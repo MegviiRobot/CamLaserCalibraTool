@@ -67,7 +67,7 @@ rosbag play yourbagdata.bag
 
 
 ## 6. Authors
-1. Yijia He, you can find the chinese version [in his homepage](https://blog.csdn.net/heyijia0327/article/details/85000943), if you have any question, please contact heyijia at megvii dot com
+1. Yijia He, you can find the chinese version [in his homepage](https://blog.csdn.net/heyijia0327/article/details/85000943), if you have any question, please contact heyijia_2013 at 163 dot com
 2. XiZhen Xiao
 3. Xiao Liu, [his homepage](http://www.liuxiao.org/)
 
