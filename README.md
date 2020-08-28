@@ -75,7 +75,7 @@ rosbag play data.bag
 
 ## 6. Authors
 
-1. Yijia He, if you have any question, please contact heyijia at megvii dot com
+1. Yijia He, if you have any question, please contact heyijia_2013 at 163 dot com
 2. XiZhen Xiao
 3. Xiao Liu, [his homepage](http://www.liuxiao.org/)
 
