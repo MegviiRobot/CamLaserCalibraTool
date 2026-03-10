@@ -33,8 +33,18 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 find_package(Eigen REQUIRED)
-find_package(OpenCV REQUIRED)
-find_package(Ceres REQUIRED)
+# Prefer OpenCV 4.10.x and fallback to generic OpenCV 4.x.
+find_package(OpenCV 4.10 QUIET)
+if(NOT OpenCV_FOUND)
+  find_package(OpenCV 4 REQUIRED)
+endif()
+
+if(OpenCV_VERSION VERSION_LESS "4.10.0")
+  message(FATAL_ERROR "OpenCV >= 4.10.0 is required, but found ${OpenCV_VERSION}")
+endif()
+
+message(STATUS "Using OpenCV version: ${OpenCV_VERSION}")
+find_package(Ceres 2 REQUIRED)
 
 generate_messages(
   DEPENDENCIES
@@ -63,6 +73,7 @@ include_directories(
   ${Eigen_INCLUDE_DIRS}
   ${OpenCV_INCLUDE_DIRS}
   ${CERES_INCLUDE_DIRS}
+  ${Ceres_INCLUDE_DIRS}
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -78,7 +89,12 @@ target_link_libraries(lasercamcal
         ${Eigen_LIBRARIES}
         ${OpenCV_LIBRARIES}
         ${CERES_LIBRARIES}
+        ${Ceres_LIBRARIES}
 )
+
+if(TARGET Ceres::ceres)
+  target_link_libraries(lasercamcal Ceres::ceres)
+endif()
 
 add_executable(kalibra_detect_node main/kalibratag_detector_node.cpp)
 target_link_libraries(kalibra_detect_node

@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <package>
   <name>lasercamcal_ros</name>
-  <version>0.1.2</version>
+  <version>0.1.3</version>
   <description>A package that provides a ROS wrapper for the Laser Camera Calibra tool C++ package</description>
 
   <maintainer email="heyijia_2013@163.com">Yijia He</maintainer>

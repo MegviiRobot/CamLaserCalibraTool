@@ -27,8 +27,7 @@
 //#define DEBUG_APRIL
 
 #ifdef DEBUG_APRIL
-#include <opencv/cv.h>
-#include <opencv/highgui.h>
+#include <opencv2/opencv.hpp>
 #endif
 
 namespace AprilTags {

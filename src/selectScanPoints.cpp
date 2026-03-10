@@ -180,7 +180,7 @@ std::vector< Eigen::Vector3d > AutoGetLinePts(const std::vector<Eigen::Vector3d>
         }
 
         cv::putText(img, "Detecting the Laser Points on the calibra planar!",
-                    cvPoint(5,30), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.7, cvScalar(255,255,255), 1, CV_AA);
+                    cv::Point(5, 30), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.7, cv::Scalar(255, 255, 255), 1, cv::LINE_AA);
         cv::imshow("ScanPoint",img);
         cv::waitKey(10);
     }
@@ -310,7 +310,7 @@ void GetRect::gettingROI(cv::Mat img)
 {
     layer = img.clone();
     cv::putText(layer, "Please Select ROI scan data with your mouse. Then, Put any key to continue!",
-                cvPoint(5,30), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.7, cvScalar(255), 1, CV_AA);
+                cv::Point(5, 30), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.7, cv::Scalar(255), 1, cv::LINE_AA);
     cv::namedWindow("ScanPoint", 1);
     cv::imshow("ScanPoint", layer);
     cv::setMouseCallback("ScanPoint", GetRect::onMouse, this);

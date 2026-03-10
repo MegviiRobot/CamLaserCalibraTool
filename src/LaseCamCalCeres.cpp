@@ -249,7 +249,7 @@ void CamLaserCalibration(const std::vector<Oberserve> obs, Eigen::Matrix4d &Tcl,
             ceres::LossFunction * loss_function = new ceres::CauchyLoss(0.05 * scale);
             problem.AddResidualBlock(costfunction, loss_function, pose.data());
 #else
-            problem.AddResidualBlock(costfunction, NULL, pose.data());
+            problem.AddResidualBlock(costfunction, nullptr, pose.data());
 #endif
         }
 
@@ -288,15 +288,15 @@ void CamLaserCalibration(const std::vector<Oberserve> obs, Eigen::Matrix4d &Tcl,
             problem.AddResidualBlock(costfunction2, loss_function, pose.data());
 
 #else
-            problem.AddResidualBlock(costfunction1, NULL, pose.data());
-            problem.AddResidualBlock(costfunction2, NULL, pose.data());
+            problem.AddResidualBlock(costfunction1, nullptr, pose.data());
+            problem.AddResidualBlock(costfunction2, nullptr, pose.data());
 #endif
         }
     }
 
 //    ceres::LocalParameterization* quaternionParameterization = new ceres::QuaternionParameterization;
 //    problem.SetParameterization(q_coeffs,quaternionParameterization);
-    ceres::LocalParameterization *local_parameterization = new PoseLocalParameterization();
+    ceres::Manifold *local_parameterization = new PoseLocalParameterization();
     problem.AddParameterBlock(pose.data(), 7, local_parameterization);
 
     ceres::Solver::Options options;
@@ -416,7 +416,7 @@ void LineFittingCeres(const std::vector<Eigen::Vector3d> Points, Eigen::Vector2d
             ceres::LossFunction * loss_function = new ceres::CauchyLoss(0.05);
             problem.AddResidualBlock(costfunction, loss_function, line);
 #else
-            problem.AddResidualBlock(costfunction, NULL, line);
+            problem.AddResidualBlock(costfunction, nullptr, line);
 #endif
     }
 
